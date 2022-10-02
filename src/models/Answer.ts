@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 const AnswerSchema = new mongoose.Schema(
   {
-    questionId: String,
     content: String,
     image: String,
     isCorrect: Boolean,
@@ -10,4 +9,10 @@ const AnswerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Answer", AnswerSchema);
+export const Answer = mongoose.model("Answer", AnswerSchema);
+
+export interface AnswerModel {
+  content: string;
+  image: string;
+  isCorrect: boolean;
+}

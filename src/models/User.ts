@@ -10,8 +10,30 @@ const UserSchema = new mongoose.Schema(
     dob: Number,
     listSubjectsId: [String],
     avatar: String,
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("User", UserSchema);
+export const User = mongoose.model("Users", UserSchema);
+
+export interface UserCreate {
+  username: string;
+  password: string;
+  fullname: string;
+  role: string;
+  email: string;
+  dob?: Number;
+  listSubjectsId?: string[];
+  avatar?: string;
+}
+
+export interface UserUpdate {
+  username: string;
+  fullname: string;
+  role: string;
+  email: string;
+  dob?: Number;
+  listSubjectsId?: string[];
+  avatar?: string;
+}

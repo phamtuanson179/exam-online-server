@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Question from "./Question";
+import { Question } from "./Question";
 
 const ResultSchema = new mongoose.Schema(
   {
@@ -13,4 +13,4 @@ const ResultSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Result", ResultSchema);
+export const Result = mongoose.model("Result", ResultSchema);

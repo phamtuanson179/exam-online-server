@@ -6,9 +6,7 @@ dotenv.config();
 const connectDB = () => {
   mongoose
     .connect(process.env.MONGO ? process.env.MONGO : "")
-    .then(() => {
-      console.log("connected to mongo");
-    })
+    .then(() => {})
     .catch((err) => {
       throw err;
     });
