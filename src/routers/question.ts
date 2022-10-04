@@ -1,18 +1,18 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import {
-  createUser,
-  deleteUser,
-  getUser,
-  updateUser,
-} from "../controllers/user";
+  getQuestion,
+  createQuestion,
+  updateQuestion,
+  deleteQuestion,
+} from "../controllers/question";
 
 const questionRouter = express.Router();
 
 questionRouter
   .route("/")
-  .get(getUser)
-  .post(createUser)
-  .put(updateUser)
-  .delete(deleteUser);
+  .get(getQuestion)
+  .post(createQuestion)
+  .put(updateQuestion)
+  .delete(deleteQuestion);
 
 export default questionRouter;

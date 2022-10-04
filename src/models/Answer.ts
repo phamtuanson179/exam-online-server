@@ -4,7 +4,6 @@ const AnswerSchema = new mongoose.Schema(
   {
     content: String,
     image: String,
-    isCorrect: Boolean,
   },
   { timestamps: true }
 );

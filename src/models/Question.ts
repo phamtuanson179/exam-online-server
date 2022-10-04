@@ -8,6 +8,8 @@ const QuestionSchema = new mongoose.Schema(
     type: String,
     answers: [Answer],
     image: String,
+    amountCorrectAnswer: Number,
+    listCorrectAnswer: [Number],
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
@@ -18,7 +20,10 @@ export const Question = mongoose.model("Question", QuestionSchema);
 export interface QuestionsWithAnswers {
   title: { type: string; required: true };
   type: string;
-  answers: AnswerModel[];
+  amountCorrectAnswer: number;
+  listCorrectAnswer: [Number];
+  listUserAnswer: AnswerModel[];
   userAnswers: number[];
+  isCorrect: boolean;
   image: string;
 }
