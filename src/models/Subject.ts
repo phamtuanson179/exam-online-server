@@ -6,10 +6,6 @@ const SubjectSchema = new mongoose.Schema(
     name: { type: String, required: true },
     alias: String,
     description: String,
-    time: Number,
-    sumAmountQuestion: { type: Number, default: 0 },
-    examAmountQuestion: Number,
-    minCorrectQuestion: Number,
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }

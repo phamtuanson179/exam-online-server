@@ -8,7 +8,6 @@ const UserSchema = new mongoose.Schema(
     fullname: { type: String, required: true },
     role: { type: String, required: true },
     dob: Number,
-    listSubjectsId: [String],
     avatar: String,
     isDeleted: { type: Boolean, default: false },
   },
@@ -17,23 +16,24 @@ const UserSchema = new mongoose.Schema(
 
 export const User = mongoose.model("Users", UserSchema);
 
-export interface UserCreate {
-  username: string;
-  password: string;
-  fullname: string;
-  role: string;
-  email: string;
-  dob?: Number;
-  listSubjectsId?: string[];
-  avatar?: string;
-}
+const LearnSchema = new mongoose.Schema(
+  {
+    userId: { type: String, required: true },
+    listSubjectId: { type: [String], required: true },
+    isDeleted: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
 
-export interface UserUpdate {
-  username: string;
-  fullname: string;
-  role: string;
-  email: string;
-  dob?: Number;
-  listSubjectsId?: string[];
-  avatar?: string;
-}
+export const Learn = mongoose.model("Learn", LearnSchema);
+
+const TeachSchema = new mongoose.Schema(
+  {
+    userId: { type: String, required: true },
+    listSubjectId: { type: [String], required: true },
+    isDeleted: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
+
+export const Teach = mongoose.model("Teach", TeachSchema);

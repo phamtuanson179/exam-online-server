@@ -1,29 +1,15 @@
 import mongoose from "mongoose";
-import { Answer, AnswerModel } from "./Answer";
 
 const QuestionSchema = new mongoose.Schema(
   {
-    subjectId: String,
-    title: { type: String, required: true },
-    type: String,
-    answers: [Answer],
-    image: String,
-    amountCorrectAnswer: Number,
-    listCorrectAnswer: [Number],
+    subjectId: { type: String, required: true },
+    content: { type: String, required: true },
+    type: { type: String, required: true },
+    listAnswers: [String],
+    listCorrectAnswers: [String],
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
 export const Question = mongoose.model("Question", QuestionSchema);
-
-export interface QuestionsWithAnswers {
-  title: { type: string; required: true };
-  type: string;
-  amountCorrectAnswer: number;
-  listCorrectAnswer: [Number];
-  listUserAnswer: AnswerModel[];
-  userAnswers: number[];
-  isCorrect: boolean;
-  image: string;
-}

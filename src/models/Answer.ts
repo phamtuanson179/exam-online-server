@@ -1,17 +1,14 @@
 import mongoose from "mongoose";
 
-const AnswerSchema = new mongoose.Schema(
+const UserAnswerSchema = new mongoose.Schema(
   {
-    content: String,
-    image: String,
+    questionId: { type: String, required: true },
+    resultId: { type: String, required: true },
+    userId: { type: String, required: true },
+    listUserAnswers: { type: String, required: true },
+    isDeleted: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
 
-export const Answer = mongoose.model("Answer", AnswerSchema);
-
-export interface AnswerModel {
-  content: string;
-  image: string;
-  isCorrect: boolean;
-}
+export const UserAnswer = mongoose.model("UserAnswer", UserAnswerSchema);

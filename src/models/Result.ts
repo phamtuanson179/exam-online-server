@@ -3,12 +3,12 @@ import { Question } from "./Question";
 
 const ResultSchema = new mongoose.Schema(
   {
-    subjectId: String,
-    userId: String,
-    point: String,
-    isPass: String,
-    time: String,
-    questions: [Question],
+    userId: { type: String, required: true },
+    examId: { type: String, required: true },
+    time: Number,
+    numberOfCorrectAnswer: Number,
+    listUserAnswers: [String],
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
