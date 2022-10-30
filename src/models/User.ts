@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema(
     role: { type: String, required: true },
     dob: Number,
     avatar: String,
+    address: String,
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }

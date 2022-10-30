@@ -10,6 +10,7 @@ import questionRouter from "./routers/question";
 import resultRouter from "./routers/result";
 import subjectRouter from "./routers/subject";
 import userRouter from "./routers/user";
+import cors from "cors";
 
 const app = express();
 
@@ -18,6 +19,7 @@ const app = express();
 
 //add middllware
 // app.use(authentication);
+app.use(cors());
 
 app.use(express.json());
 //add router
