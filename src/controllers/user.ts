@@ -4,6 +4,7 @@ import { createError } from "../helper/error";
 import { createSuccess } from "../helper/success";
 import { Subject } from "../models/Subject";
 import { User } from "../models/User";
+import bcryptjs from "bcryptjs";
 
 export const getUser = async (
   req: Request,
@@ -25,12 +26,13 @@ export const updateUser = async (
 ) => {
   try {
     const query = req.query;
+    console.log(query);
     const body = req.body;
-    const user = Subject.findById(query?.id);
+    const user = User.findById(query?.id);
     if (!user) {
       return next(createError(res, USER_ERROR.NOT_USER));
     } else {
-      const updatedUser = await Subject.findByIdAndUpdate(
+      const updatedUser = await User.findByIdAndUpdate(
         query?.id,
         { $set: body },
         { new: true }
@@ -49,9 +51,11 @@ export const createUser = async (
 ) => {
   try {
     const body = req.body;
-    const user = new User(body);
-    await user.save();
-    next(createSuccess(res, user.toJSON()));
+    const salt: string = bcryptjs.genSaltSync(10);
+    const hash = bcryptjs.hashSync("1", salt);
+    const newUser = new User({ ...body, password: hash });
+    await newUser.save();
+    createSuccess(res, newUser.toJSON());
   } catch (error) {
     next(error);
   }
