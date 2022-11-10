@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  getQuestion,
+  getAllQuestion,
   createQuestion,
   updateQuestion,
   deleteQuestion,
@@ -10,7 +10,7 @@ const questionRouter = express.Router();
 
 questionRouter
   .route("/")
-  .get(getQuestion)
+  .get(getAllQuestion)
   .post(createQuestion)
   .put(updateQuestion)
   .delete(deleteQuestion);

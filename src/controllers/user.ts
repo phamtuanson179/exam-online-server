@@ -5,6 +5,7 @@ import { createSuccess } from "../helper/success";
 import { Subject } from "../models/Subject";
 import { User } from "../models/User";
 import bcryptjs from "bcryptjs";
+import { resolveFilter } from "../helper/filter";
 
 export const getUser = async (
   req: Request,
@@ -12,7 +13,12 @@ export const getUser = async (
   next: NextFunction
 ) => {
   try {
-    const listUsers = await User.find({ isDeleted: false });
+    const filterString = req.query?.filterString?.toString();
+    let convertedFilter = resolveFilter(filterString);
+    const listUsers = await User.find({
+      ...convertedFilter,
+      ...{ isDeleted: false },
+    });
     next(createSuccess(res, listUsers));
   } catch (error) {
     next(error);

@@ -22,3 +22,10 @@ export const USER_ERROR = {
     message: "Can't find user",
   },
 };
+
+export const QUESTION_ERROR = {
+  NOT_QUESTION: {
+    statusCode: 900,
+    message: "Can't find question",
+  },
+};
