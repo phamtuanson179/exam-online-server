@@ -17,24 +17,22 @@ const UserSchema = new mongoose.Schema(
 
 export const User = mongoose.model("Users", UserSchema);
 
-const LearnSchema = new mongoose.Schema(
+const TeacherSchema = new mongoose.Schema(
   {
+    subjectId: { type: String, required: true },
     userId: { type: String, required: true },
-    listSubjectId: { type: [String], required: true },
-    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-export const Learn = mongoose.model("Learn", LearnSchema);
+export const Teacher = mongoose.model("Teacher", TeacherSchema);
 
-const TeachSchema = new mongoose.Schema(
+const StudentSchema = new mongoose.Schema(
   {
+    subjectId: { type: String, required: true },
     userId: { type: String, required: true },
-    listSubjectId: { type: [String], required: true },
-    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-export const Teach = mongoose.model("Teach", TeachSchema);
+export const Student = mongoose.model("Student", StudentSchema);
