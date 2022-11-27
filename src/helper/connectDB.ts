@@ -5,7 +5,7 @@ dotenv.config();
 //setup connect db
 const connectDB = () => {
   mongoose.connect(
-    process.env.MONGGO_MAC_VPN ? process.env.MONGGO_MAC_VPN : ""
+    process.env.MONGO_LOCALHOST ? process.env.MONGO_LOCALHOST : ""
   );
 
   mongoose.connection.on("connected", () => {

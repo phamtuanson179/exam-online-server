@@ -29,3 +29,10 @@ export const QUESTION_ERROR = {
     message: "Can't find question",
   },
 };
+
+export const EXAM_ERROR = {
+  NOT_EXAM: {
+    statusCode: 900,
+    message: "Can't find exam",
+  },
+};
