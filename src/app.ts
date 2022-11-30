@@ -1,16 +1,15 @@
 import express from "express";
 // import { swaggerDocs, swaggerOptions } from "./helper/swagger";
-import { authentication } from "./middlewares/authentication";
 
-import cookieParser from "cookie-parser";
+import cors from "cors";
 import connectDB from "./helper/connectDB";
 import authRouter from "./routers/auth";
+import classroomRouter from "./routers/classroom";
 import examRouter from "./routers/exam";
 import questionRouter from "./routers/question";
 import resultRouter from "./routers/result";
 import subjectRouter from "./routers/subject";
 import userRouter from "./routers/user";
-import cors from "cors";
 
 const app = express();
 
@@ -25,6 +24,7 @@ app.use(express.json());
 //add router
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/classroom", classroomRouter);
 app.use("/api/exam", examRouter);
 app.use("/api/question", questionRouter);
 app.use("/api/result", resultRouter);

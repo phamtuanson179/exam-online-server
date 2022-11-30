@@ -20,3 +20,4 @@ export const RESULT_TYPE = {
   PASS: "PASS",
   NO_PASS: "NO_PASS",
 };
+
