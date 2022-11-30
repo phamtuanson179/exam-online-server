@@ -30,6 +30,13 @@ export const QUESTION_ERROR = {
   },
 };
 
+export const CLASSROOM_ERROR = {
+  NOT_CLASSROOM: {
+    statusCode: 900,
+    message: "Can't find classroom",
+  },
+};
+
 export const EXAM_ERROR = {
   NOT_EXAM: {
     statusCode: 900,
