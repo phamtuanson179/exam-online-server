@@ -7,7 +7,6 @@ const ResultSchema = new mongoose.Schema(
     examId: { type: String, required: true },
     time: Number,
     numberOfCorrectAnswer: Number,
-    listUserAnswers: [String],
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
