@@ -100,8 +100,8 @@ export const getTeacherOfClassroom = async (
 ) => {
   try {
     const classroomId = req.query.classroomId;
-    const listTeacherOfClassroom = await TeacherOfClassroom.find({ classroomId: classroomId });
-    next(createSuccess(res, listTeacherOfClassroom));
+    const listTeacherOfClassrooms = await TeacherOfClassroom.find({ classroomId: classroomId });
+    next(createSuccess(res, listTeacherOfClassrooms));
   } catch (error) {
     next(error);
   }

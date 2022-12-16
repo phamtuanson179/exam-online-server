@@ -7,6 +7,7 @@ import { User } from "../models/User";
 import bcryptjs from "bcryptjs";
 import { resolveFilter } from "../helper/filter";
 import { filterAddAndRemoveElement } from "../helper/other";
+import { ROLE } from "../constants/type";
 
 export const getUser = async (
   req: Request,
@@ -14,7 +15,7 @@ export const getUser = async (
   next: NextFunction
 ) => {
   try {
-    
+
 
     const filterString = req.query?.filterString?.toString();
     let convertedFilter = resolveFilter(filterString);
@@ -90,6 +91,43 @@ export const deleteUser = async (
       );
       next(createSuccess(res, deletedUser));
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getTeacher = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const filterString = req.query?.filterString?.toString();
+    let convertedFilter = resolveFilter(filterString);
+    const listUsers = await User.find({
+      ...convertedFilter,
+      ...{ isDeleted: false, role: ROLE.TEACHER },
+    });
+    next(createSuccess(res, listUsers));
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const getStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const filterString = req.query?.filterString?.toString();
+    let convertedFilter = resolveFilter(filterString);
+    const listUsers = await User.find({
+      ...convertedFilter,
+      ...{ isDeleted: false, role: ROLE.STUDENT },
+    });
+    next(createSuccess(res, listUsers));
   } catch (error) {
     next(error);
   }
