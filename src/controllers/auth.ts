@@ -13,7 +13,7 @@ export const login = async (
 ) => {
   try {
     const body = req.body;
-    const user = await User.findOne({ username: body.username });
+    const user = await User.findOne({ email: body.email });
     if (!user) {
       return next(createError(res, AUTH_ERROR.NOT_USER));
     } else {

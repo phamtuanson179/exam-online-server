@@ -6,6 +6,8 @@ import { Subject } from "../models/Subject";
 import { User } from "../models/User";
 import bcryptjs from "bcryptjs";
 import { resolveFilter } from "../helper/filter";
+import { filterAddAndRemoveElement } from "../helper/other";
+import { ROLE } from "../constants/type";
 
 export const getUser = async (
   req: Request,
@@ -13,6 +15,8 @@ export const getUser = async (
   next: NextFunction
 ) => {
   try {
+
+
     const filterString = req.query?.filterString?.toString();
     let convertedFilter = resolveFilter(filterString);
     const listUsers = await User.find({
@@ -91,3 +95,82 @@ export const deleteUser = async (
     next(error);
   }
 };
+
+export const getTeacher = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const filterString = req.query?.filterString?.toString();
+    let convertedFilter = resolveFilter(filterString);
+    const listUsers = await User.find({
+      ...convertedFilter,
+      ...{ isDeleted: false, role: ROLE.TEACHER },
+    });
+    next(createSuccess(res, listUsers));
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const getStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const filterString = req.query?.filterString?.toString();
+    let convertedFilter = resolveFilter(filterString);
+    const listUsers = await User.find({
+      ...convertedFilter,
+      ...{ isDeleted: false, role: ROLE.STUDENT },
+    });
+    next(createSuccess(res, listUsers));
+  } catch (error) {
+    next(error);
+  }
+};
+
+// export const updateStudentOfSubject = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const subjectId = req.body.subjectId;
+//     const listUserIdsString = req.body.listUserIds?.toString();
+//     const changedListUserIds = listUserIdsString.split(",");
+//     const listStudentsOfSubject = await Student.find({ subjectId: subjectId });
+//     const curListUserIds = listStudentsOfSubject.map((teach) => teach.userId);
+//     const addAndRemoveUserId = filterAddAndRemoveElement(
+//       curListUserIds,
+//       changedListUserIds
+//     );
+
+//     addAndRemoveUserId.add.map(async (userId: string) => {
+//       await Student.create({ subjectId: subjectId, userId: userId });
+//     });
+//     addAndRemoveUserId.delete.map(async (userId: string) => {
+//       await Student.findOneAndDelete({ subjectId: subjectId, userId: userId });
+//     });
+//     next(createSuccess(res, ""));
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+// export const getStudentOfSubject = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const subjectId = req.query.subjectId;
+//     const listStudents = await Student.find({ subjectId: subjectId });
+//     next(createSuccess(res, listStudents));
+//   } catch (error) {
+//     next(error);
+//   }
+// };

@@ -5,7 +5,8 @@ const UserAnswerSchema = new mongoose.Schema(
     questionId: { type: String, required: true },
     resultId: { type: String, required: true },
     userId: { type: String, required: true },
-    listUserAnswers: { type: String, required: true },
+    userAnswer: { type: [String], required: true },
+    status: { type: Boolean, required: true },
     isDeleted: { type: Boolean, default: true },
   },
   { timestamps: true }

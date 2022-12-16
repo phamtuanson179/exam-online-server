@@ -7,6 +7,14 @@ export const AUTH_ERROR = {
     statusCode: 601,
     message: "Wrong password!",
   },
+  NOT_AUTHENTICATED: {
+    statusCode: 602,
+    message: "You are not authenticated!",
+  },
+  TOKEN_NOT_VALID: {
+    statusCode: 603,
+    message: "Token is not valid!",
+  },
 };
 
 export const SUBJECT_ERROR = {
