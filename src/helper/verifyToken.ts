@@ -9,12 +9,12 @@ export const verifyToken = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies.access_token;
+  const token = req.headers.authorization;
   if (!token) return next(createError(res, AUTH_ERROR.NOT_AUTHENTICATED));
 
   jwt.verify(token, process.env.JWT, (err, currentUserId) => {
     if (err) return next(createError(res, AUTH_ERROR.TOKEN_NOT_VALID));
-    req.query = { ...req.query, currentUserId: currentUserId };
+    req.query = { ...req.query, currentUserId: currentUserId?.id };
     next();
   });
 };

@@ -11,15 +11,30 @@ export const getQuestion = async (
   next: NextFunction
 ) => {
   try {
-    const questionId = req.query?.id?.toString();
     const filterString = req.query?.filterString?.toString();
+    let convertedFilter = resolveFilter(filterString);
+    let listQuestions = await Question.find({
+      ...convertedFilter,
+      ...{ isDeleted: false },
+    });
+    return next(createSuccess(res, listQuestions));
+  } catch (error) {
+    next(error);
+  }
+};
 
-    if (questionId) {
-      getQuestionById(questionId, res, next)
+export const getQuestionById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const questionId = req.query?.id;
+    const question = await Question.findById(questionId);
+    if (!question) {
+      return next(createError(res, QUESTION_ERROR.NOT_QUESTION));
     }
-    else {
-      getAllQuestion(filterString, res, next)
-    }
+    return next(createSuccess(res, question));
   } catch (error) {
     next(error);
   }
@@ -90,21 +105,3 @@ export const updateQuestion = async (
     next(error);
   }
 };
-
-const getQuestionById = async (questionId?: string, res: Response, next: NextFunction) => {
-  const question = await Question.findById(questionId);
-  if (!question) {
-    return next(createError(res, QUESTION_ERROR.NOT_QUESTION));
-  }
-  return next(createSuccess(res, question));
-}
-
-const getAllQuestion = async (filterString?: string, res: Response, next: NextFunction) => {
-  let convertedFilter = resolveFilter(filterString);
-  let listQuestions = await Question.find({
-    ...convertedFilter,
-    ...{ isDeleted: false },
-  });
-  return next(createSuccess(res, listQuestions));
-}
-

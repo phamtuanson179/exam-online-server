@@ -29,10 +29,8 @@ export const login = async (
           process.env.JWT ? process.env.JWT : ""
         );
         const { password, ...others } = user.toObject();
-        res
-          .cookie("access_token", token, { httpOnly: true })
-          .status(200)
-          .json(others);
+
+        res.status(200).json({ access_token: token });
       }
     }
   } catch (error) {

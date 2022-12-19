@@ -4,7 +4,8 @@ import {
   createQuestionOfExam,
   deleteExam,
   deleteQuestionOfExam,
-  getAllExam,
+  getExam,
+  getExamById,
   getExamOfCurrentUser,
   getQuestionOfExam,
   updateExam,
@@ -16,7 +17,7 @@ const examRouter = express.Router();
 
 examRouter
   .route("/")
-  .get(getAllExam)
+  .get(getExam)
   .post(createExam)
   .put(updateExam)
   .delete(deleteExam);
@@ -27,5 +28,6 @@ examRouter
   .post(createQuestionOfExam)
   .delete(deleteQuestionOfExam);
 examRouter.route("/current-user").get(verifyToken, getExamOfCurrentUser);
+examRouter.route("/get-by-id").get(getExamById);
 
 export default examRouter;

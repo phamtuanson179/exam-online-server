@@ -9,7 +9,7 @@ import { ExamOfClassroom } from "../models/ExamOfClassroom";
 import { StudentOfClassroom } from "../models/StudentOfClassroom";
 import { TeacherOfClassroom } from "../models/TeacherOfClassroom";
 
-export const getAllClass = async (
+export const getClass = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -92,7 +92,6 @@ export const updateClass = async (
   }
 };
 
-
 export const getTeacherOfClassroom = async (
   req: Request,
   res: Response,
@@ -100,7 +99,9 @@ export const getTeacherOfClassroom = async (
 ) => {
   try {
     const classroomId = req.query.classroomId;
-    const listTeacherOfClassrooms = await TeacherOfClassroom.find({ classroomId: classroomId });
+    const listTeacherOfClassrooms = await TeacherOfClassroom.find({
+      classroomId: classroomId,
+    });
     next(createSuccess(res, listTeacherOfClassrooms));
   } catch (error) {
     next(error);
@@ -115,8 +116,12 @@ export const updateTeacherOfClassroom = async (
   try {
     const classroomId = req.query.classroomId;
     const changedListUserIds = req.body.listUserIds;
-    const listTeacherOfClassrooms = await TeacherOfClassroom.find({ classroomId: classroomId });
-    const curListUserIds = listTeacherOfClassrooms.map((teacherOfClassroom) => teacherOfClassroom.userId);
+    const listTeacherOfClassrooms = await TeacherOfClassroom.find({
+      classroomId: classroomId,
+    });
+    const curListUserIds = listTeacherOfClassrooms.map(
+      (teacherOfClassroom) => teacherOfClassroom.userId
+    );
 
     const addAndRemoveUserId = filterAddAndRemoveElement(
       curListUserIds,
@@ -124,10 +129,16 @@ export const updateTeacherOfClassroom = async (
     );
 
     addAndRemoveUserId.add.map(async (userId: string) => {
-      await TeacherOfClassroom.create({ classroomId: classroomId, userId: userId });
+      await TeacherOfClassroom.create({
+        classroomId: classroomId,
+        userId: userId,
+      });
     });
     addAndRemoveUserId.delete.map(async (userId: string) => {
-      await TeacherOfClassroom.findOneAndDelete({ classroomId: classroomId, userId: userId });
+      await TeacherOfClassroom.findOneAndDelete({
+        classroomId: classroomId,
+        userId: userId,
+      });
     });
     next(createSuccess(res, ""));
   } catch (error) {
@@ -142,7 +153,9 @@ export const getStudentOfClassroom = async (
 ) => {
   try {
     const classroomId = req.query.classroomId;
-    const listStudentOfClassroom = await StudentOfClassroom.find({ classroomId: classroomId });
+    const listStudentOfClassroom = await StudentOfClassroom.find({
+      classroomId: classroomId,
+    });
     next(createSuccess(res, listStudentOfClassroom));
   } catch (error) {
     next(error);
@@ -157,8 +170,12 @@ export const updateStudentOfClassroom = async (
   try {
     const classroomId = req.query.classroomId;
     const changedListUserIds = req.body.listUserIds;
-    const listStudentOfClassrooms = await StudentOfClassroom.find({ classroomId: classroomId });
-    const curListUserIds = listStudentOfClassrooms.map((studentOfClassroom) => studentOfClassroom.userId);
+    const listStudentOfClassrooms = await StudentOfClassroom.find({
+      classroomId: classroomId,
+    });
+    const curListUserIds = listStudentOfClassrooms.map(
+      (studentOfClassroom) => studentOfClassroom.userId
+    );
 
     const addAndRemoveUserId = filterAddAndRemoveElement(
       curListUserIds,
@@ -166,10 +183,16 @@ export const updateStudentOfClassroom = async (
     );
 
     addAndRemoveUserId.add.map(async (userId: string) => {
-      await StudentOfClassroom.create({ classroomId: classroomId, userId: userId });
+      await StudentOfClassroom.create({
+        classroomId: classroomId,
+        userId: userId,
+      });
     });
     addAndRemoveUserId.delete.map(async (userId: string) => {
-      await StudentOfClassroom.findOneAndDelete({ classroomId: classroomId, userId: userId });
+      await StudentOfClassroom.findOneAndDelete({
+        classroomId: classroomId,
+        userId: userId,
+      });
     });
     next(createSuccess(res, ""));
   } catch (error) {
@@ -185,8 +208,12 @@ export const updateExamOfClassroom = async (
   try {
     const classroomId = req.query.classroomId;
     const changedListExamIds = req.body.listExamIds;
-    const listExamOfClassrooms = await ExamOfClassroom.find({ classroomId: classroomId });
-    const curListExamIds = listExamOfClassrooms.map((ExamOfClassroom) => ExamOfClassroom.examId);
+    const listExamOfClassrooms = await ExamOfClassroom.find({
+      classroomId: classroomId,
+    });
+    const curListExamIds = listExamOfClassrooms.map(
+      (ExamOfClassroom) => ExamOfClassroom.examId
+    );
 
     const addAndRemoveUserId = filterAddAndRemoveElement(
       curListExamIds,
@@ -194,10 +221,16 @@ export const updateExamOfClassroom = async (
     );
 
     addAndRemoveUserId.add.map(async (examId: string) => {
-      await ExamOfClassroom.create({ classroomId: classroomId, examId: examId });
+      await ExamOfClassroom.create({
+        classroomId: classroomId,
+        examId: examId,
+      });
     });
     addAndRemoveUserId.delete.map(async (examId: string) => {
-      await ExamOfClassroom.findOneAndDelete({ classroomId: classroomId, examId: examId });
+      await ExamOfClassroom.findOneAndDelete({
+        classroomId: classroomId,
+        examId: examId,
+      });
     });
     next(createSuccess(res, ""));
   } catch (error) {
@@ -212,15 +245,11 @@ export const getExamOfClassroom = async (
 ) => {
   try {
     const classroomId = req.query.classroomId;
-    const listExamOfClassroom = await ExamOfClassroom.find({ classroomId: classroomId });
+    const listExamOfClassroom = await ExamOfClassroom.find({
+      classroomId: classroomId,
+    });
     next(createSuccess(res, listExamOfClassroom));
   } catch (error) {
     next(error);
   }
 };
-
-
-
-
-
-

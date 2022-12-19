@@ -5,9 +5,11 @@ import { resolveFilter } from "../helper/filter";
 import { filterAddAndRemoveElement } from "../helper/other";
 import { createSuccess } from "../helper/success";
 import { Exam } from "../models/Exam";
+import { ExamOfClassroom } from "../models/ExamOfClassroom";
 import { QuestionOfExam } from "../models/QuestionOfExam";
+import { StudentOfClassroom } from "../models/StudentOfClassroom";
 
-export const getAllExam = async (
+export const getExam = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -25,6 +27,20 @@ export const getAllExam = async (
   }
 };
 
+export const getExamById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const examId = req.query?.id;
+    let exam = await Exam.findById(examId);
+    next(createSuccess(res, exam));
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getExamOfCurrentUser = async (
   req: Request,
   res: Response,
@@ -32,8 +48,41 @@ export const getExamOfCurrentUser = async (
 ) => {
   try {
     const currentUserId = req.query.currentUserId;
-    console.log({ currentUserId });
-    // const listClassroomOfUser = next(createSuccess(res, listExams));
+
+    const listClassroomOfUser = await StudentOfClassroom.find({
+      userId: currentUserId,
+    });
+
+    let listExamOfClassroomsOfUser: any[] = [];
+    await Promise.all(
+      listClassroomOfUser.map(async (classroomOfUser) => {
+        return await ExamOfClassroom.find({
+          classroomId: classroomOfUser.classroomId,
+        });
+      })
+    ).then((res) => {
+      listExamOfClassroomsOfUser = res.reduce(
+        (pre: any[], cur: any[]) => pre.concat(cur),
+        []
+      );
+    });
+
+    let listExams: any[] = [];
+    if (listExamOfClassroomsOfUser.length > 0) {
+      const listExamIds = listExamOfClassroomsOfUser.map(
+        (examOfClassroom) => examOfClassroom.examId
+      );
+
+      await Promise.all(
+        listExamIds.map(async (examId) => {
+          return await Exam.findById(examId);
+        })
+      ).then((res) => {
+        listExams = res;
+      });
+    }
+
+    next(createSuccess(res, listExams));
   } catch (error) {
     next(error);
   }

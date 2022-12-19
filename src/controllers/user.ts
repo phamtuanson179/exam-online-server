@@ -15,8 +15,7 @@ export const getUser = async (
   next: NextFunction
 ) => {
   try {
-
-
+    console.log({ res });
     const filterString = req.query?.filterString?.toString();
     let convertedFilter = resolveFilter(filterString);
     const listUsers = await User.find({
@@ -113,7 +112,6 @@ export const getTeacher = async (
     next(error);
   }
 };
-
 
 export const getStudent = async (
   req: Request,

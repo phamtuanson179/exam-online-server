@@ -2,7 +2,7 @@ import express from "express";
 import {
   createSubject,
   deleteSubject,
-  getAllSubject,
+  getSubject,
   getStudentOfSubject,
   getTeacherOfSubject,
   updateStudentOfSubject,
@@ -14,7 +14,7 @@ const subjectRouter = express.Router();
 
 subjectRouter
   .route("/")
-  .get(getAllSubject)
+  .get(getSubject)
   .post(createSubject)
   .put(updateSubject)
   .delete(deleteSubject);

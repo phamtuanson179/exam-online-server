@@ -6,7 +6,7 @@ import { createSuccess } from "../helper/success";
 import { Subject } from "../models/Subject";
 import { Student, Teacher } from "../models/User";
 
-export const getAllSubject = async (
+export const getSubject = async (
   req: Request,
   res: Response,
   next: NextFunction
