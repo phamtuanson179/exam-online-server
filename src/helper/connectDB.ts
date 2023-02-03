@@ -4,9 +4,7 @@ dotenv.config();
 
 //setup connect db
 const connectDB = () => {
-  mongoose.connect(
-    process.env.MONGO_LOCALHOST ? process.env.MONGO_LOCALHOST : ""
-  );
+  mongoose.connect("mongodb://localhost:27017/exam-online-system");
 
   mongoose.connection.on("connected", () => {
     console.log("DB connected");

@@ -11,6 +11,7 @@ export const getQuestion = async (
   next: NextFunction
 ) => {
   try {
+    // const subjectId = req.query?.subjectId;
     const filterString = req.query?.filterString?.toString();
     let convertedFilter = resolveFilter(filterString);
     let listQuestions = await Question.find({
@@ -47,8 +48,6 @@ export const createQuestion = async (
 ) => {
   try {
     const body = req.body;
-    console.log({ body });
-
     const question = new Question(body);
     await question.save();
     next(createSuccess(res, question.toJSON()));

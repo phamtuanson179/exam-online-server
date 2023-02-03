@@ -6,8 +6,9 @@ import { Subject } from "../models/Subject";
 import { User } from "../models/User";
 import bcryptjs from "bcryptjs";
 import { resolveFilter } from "../helper/filter";
-import { filterAddAndRemoveElement } from "../helper/other";
+import { filterAddAndRemoveElement } from "../helper/common";
 import { ROLE } from "../constants/type";
+import { readFile, utils } from "xlsx";
 
 export const getUser = async (
   req: Request,
@@ -15,7 +16,6 @@ export const getUser = async (
   next: NextFunction
 ) => {
   try {
-    console.log({ res });
     const filterString = req.query?.filterString?.toString();
     let convertedFilter = resolveFilter(filterString);
     const listUsers = await User.find({
@@ -28,6 +28,20 @@ export const getUser = async (
   }
 };
 
+export const getCurrentUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const query = req.query;
+    const user = await User.findById(query.currentUserId);
+    next(createSuccess(res, user));
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateUser = async (
   req: Request,
   res: Response,
@@ -35,7 +49,6 @@ export const updateUser = async (
 ) => {
   try {
     const query = req.query;
-    console.log(query);
     const body = req.body;
     const user = User.findById(query?.id);
     if (!user) {
@@ -130,6 +143,40 @@ export const getStudent = async (
     next(error);
   }
 };
+
+export const createBatchUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const file = readFile(req?.file?.path|| "");
+    const content = utils.sheet_to_json(file.Sheets[file.SheetNames[0]]);
+
+    const salt: string = bcryptjs.genSaltSync(10);
+    const hash = bcryptjs.hashSync("1", salt);
+    const batchUser = await User.insertMany(
+      content.map((user: any) => ({
+        fullname: user?.["Họ tên"],
+        email: user?.["Email"],
+        password: hash,
+        phoneNumber: user?.["Số điện thoại"],
+        address: user?.["Địa chỉ"],
+        dob: user?.["Ngày sinh"] && new Date(user?.["Ngày sinh"]),
+        role:
+          user?.["Quyền"]?.toUpperCase() === "Học Sinh"?.toUpperCase()
+            ? ROLE.STUDENT
+            : user?.["Quyền"]?.toUpperCase() === "Giáo Viên"?.toUpperCase()
+            ? ROLE.TEACHER
+            : "",
+      }))
+    );
+    createSuccess(res, batchUser);
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 // export const updateStudentOfSubject = async (
 //   req: Request,

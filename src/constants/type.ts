@@ -12,7 +12,7 @@ export const EXAM_TYPE = {
 export const QUESTION_TYPE = {
   ONE: "ONE",
   MANY: "MANY",
-  FILL_WITH_NUMBER: "FILL_WITH_NUMBER",
+  FILL: "FILL",
   TRUE_FALSE: "TRUE_FALSE",
 };
 

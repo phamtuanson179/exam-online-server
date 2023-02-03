@@ -10,6 +10,8 @@ import questionRouter from "./routers/question";
 import resultRouter from "./routers/result";
 import subjectRouter from "./routers/subject";
 import userRouter from "./routers/user";
+import reportRouter from "./routers/report";
+import bodyParser from "body-parser";
 
 const app = express();
 
@@ -20,6 +22,9 @@ const app = express();
 // app.use(authentication);
 app.use(cors());
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 app.use(express.json());
 //add router
 app.use("/api/auth", authRouter);
@@ -29,6 +34,7 @@ app.use("/api/exam", examRouter);
 app.use("/api/question", questionRouter);
 app.use("/api/result", resultRouter);
 app.use("/api/subject", subjectRouter);
+app.use("/api/report", reportRouter);
 
 app.listen(8080, () => {
   connectDB();

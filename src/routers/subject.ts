@@ -9,12 +9,13 @@ import {
   updateSubject,
   updateTeacherOfSubject,
 } from "../controllers/subject";
+import { verifyToken } from "../helper/verifyToken";
 
 const subjectRouter = express.Router();
 
 subjectRouter
   .route("/")
-  .get(getSubject)
+  .get(verifyToken,getSubject)
   .post(createSubject)
   .put(updateSubject)
   .delete(deleteSubject);

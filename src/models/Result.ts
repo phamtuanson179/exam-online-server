@@ -5,8 +5,9 @@ const ResultSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
     examId: { type: String, required: true },
-    time: Number,
-    numberOfCorrectAnswer: Number,
+    time: { type: Number, required: true },
+    numberOfCorrectAnswer: { type: Number, required: true },
+    isPass: { type: Number, required: true, default: false },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }

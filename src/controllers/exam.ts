@@ -2,12 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { EXAM_ERROR } from "../constants/error";
 import { createError } from "../helper/error";
 import { resolveFilter } from "../helper/filter";
-import { filterAddAndRemoveElement } from "../helper/other";
+import { filterAddAndRemoveElement } from "../helper/common";
 import { createSuccess } from "../helper/success";
 import { Exam } from "../models/Exam";
 import { ExamOfClassroom } from "../models/ExamOfClassroom";
 import { QuestionOfExam } from "../models/QuestionOfExam";
 import { StudentOfClassroom } from "../models/StudentOfClassroom";
+import { Classroom } from "../models/Classroom";
 
 export const getExam = async (
   req: Request,
@@ -35,6 +36,21 @@ export const getExamById = async (
   try {
     const examId = req.query?.id;
     let exam = await Exam.findById(examId);
+    next(createSuccess(res, exam));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getExamByClassroomId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const classroomId = req.query?.classroomId;
+    const classroom = await Classroom.findById(classroomId)
+    let exam = await Exam.find({subjectId: classroom?.subjectId});
     next(createSuccess(res, exam));
   } catch (error) {
     next(error);

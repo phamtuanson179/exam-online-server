@@ -1,13 +1,20 @@
 import { NextFunction, Request, Response } from "express";
-import { CLASSROOM_ERROR, QUESTION_ERROR } from "../constants/error";
+import {
+  CLASSROOM_ERROR,
+  QUESTION_ERROR,
+  USER_ERROR,
+} from "../constants/error";
 import { createError } from "../helper/error";
 import { resolveFilter } from "../helper/filter";
-import { filterAddAndRemoveElement } from "../helper/other";
+import { filterAddAndRemoveElement } from "../helper/common";
 import { createSuccess } from "../helper/success";
 import { Classroom } from "../models/Classroom";
 import { ExamOfClassroom } from "../models/ExamOfClassroom";
 import { StudentOfClassroom } from "../models/StudentOfClassroom";
 import { TeacherOfClassroom } from "../models/TeacherOfClassroom";
+import mongoose from "mongoose";
+import { User } from "../models/User";
+import { ROLE } from "../constants/type";
 
 export const getClass = async (
   req: Request,
@@ -17,15 +24,64 @@ export const getClass = async (
   try {
     const filterString = req.query?.filterString?.toString();
     let convertedFilter = resolveFilter(filterString);
-    let listClasses = await Classroom.find({
-      ...convertedFilter,
-      ...{ isDeleted: false },
-    });
+    let currentUserId = req.query.currentUserId;
+    let currentUser = await User.findById(currentUserId);
+    if (!currentUser) {
+      next(createError(res, USER_ERROR.NOT_USER));
+    }
+
+    let listClasses:any[] = [];
+
+    if (currentUser?.role === ROLE.ADMIN) {
+      listClasses = await Classroom.find({
+        ...convertedFilter,
+        ...{ isDeleted: false },
+      });
+    }
+
+    if (currentUser?.role === ROLE.TEACHER) {
+      let listTeacherOfClassrooms = await TeacherOfClassroom.find({
+        userId: currentUserId,
+      });
+
+      listClasses = await Classroom.find({
+        _id: { $in: [listTeacherOfClassrooms.map((item) => item.classroomId)] },
+        ...convertedFilter,
+        ...{ isDeleted: false },
+      });
+    }
+
     next(createSuccess(res, listClasses));
   } catch (error) {
     next(error);
   }
 };
+
+export const getClassByExamId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const query = req.query;
+    let listExamOfClassroom = await ExamOfClassroom.find({
+      examId: query.examId,
+    });
+    let listClassroom = await Classroom.find({
+      _id: {
+        $in: [
+          listExamOfClassroom.map(
+            (item) => new mongoose.Types.ObjectId(item?.classroomId)
+          ),
+        ],
+      },
+    });
+    next(createSuccess(res, listClassroom));
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createClass = async (
   req: Request,
   res: Response,
@@ -33,7 +89,6 @@ export const createClass = async (
 ) => {
   try {
     const body = req.body;
-    console.log({ body });
 
     const classroom = new Classroom(body);
     await classroom.save();

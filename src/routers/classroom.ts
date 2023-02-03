@@ -3,6 +3,7 @@ import {
   createClass,
   deleteClass,
   getClass,
+  getClassByExamId,
   getExamOfClassroom,
   getStudentOfClassroom,
   getTeacherOfClassroom,
@@ -11,15 +12,19 @@ import {
   updateStudentOfClassroom,
   updateTeacherOfClassroom,
 } from "../controllers/classroom";
+import { verifyToken } from "../helper/verifyToken";
 
 const classroomRouter = express.Router();
 
 classroomRouter
   .route("/")
-  .get(getClass)
-  .post(createClass)
-  .put(updateClass)
-  .delete(deleteClass);
+  .get(verifyToken,getClass)
+  .post(verifyToken,createClass)
+  .put(verifyToken,updateClass)
+  .delete(verifyToken,deleteClass);
+classroomRouter
+  .route("/get-class-by-exam-id")
+  .get(verifyToken,getClassByExamId)
 classroomRouter
   .route("/exam-of-classroom")
   .get(getExamOfClassroom)

@@ -2,7 +2,6 @@ import { Query } from "../models/Query";
 
 export const resolveFilter = (filterString: string | undefined) => {
   let res: { [key: string]: any } = {};
-  console.log({ filterString });
   if (filterString) {
     const filterArr = filterString.split(",");
 

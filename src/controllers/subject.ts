@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { SUBJECT_ERROR } from "../constants/error";
+import { ROLE } from "../constants/type";
+import { filterAddAndRemoveElement } from "../helper/common";
 import { createError } from "../helper/error";
-import { filterAddAndRemoveElement } from "../helper/other";
 import { createSuccess } from "../helper/success";
+import { Classroom } from "../models/Classroom";
 import { Subject } from "../models/Subject";
-import { Student, Teacher } from "../models/User";
+import { TeacherOfClassroom } from "../models/TeacherOfClassroom";
+import { Student, Teacher, User } from "../models/User";
 
 export const getSubject = async (
   req: Request,
@@ -12,7 +15,31 @@ export const getSubject = async (
   next: NextFunction
 ) => {
   try {
-    const listSubjects = await Subject.find({ isDeleted: false });
+    const currentUserId = req.query.currentUserId;
+    const currentUser = await User.findById(currentUserId);
+    let listSubjects: any[] = [];
+    if (currentUser?.role === ROLE.ADMIN) {
+      listSubjects = await Subject.find({ isDeleted: false });
+    } else {
+      const listTeacherOfClassroom = await TeacherOfClassroom.find({
+        userId: currentUserId,
+      });
+
+      const listClassrooms = await Classroom.find({
+        _id: { $in: listTeacherOfClassroom.map((item) => item.classroomId) },
+      });
+
+      const listSubjectIds = new Set(
+        listClassrooms.map((item) => item.subjectId)
+      );
+
+      console.log({listSubjectIds});
+
+      listSubjects = await Subject.find({
+        _id: { $in:Array.from(listSubjectIds)},
+        isDeleted: false,
+      });
+    }
     next(createSuccess(res, listSubjects));
   } catch (error) {
     next(error);
