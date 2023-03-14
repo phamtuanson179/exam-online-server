@@ -91,13 +91,15 @@ export const getPassedMount = async (
         listStudentId.includes(item.userId)
       );
 
+      console.log('pass',listResultInClassroom);
+
       next(
         createSuccess(
           res,
           listResultInClassroom?.filter((item) => item?.isPass)?.length
         )
       );
-    } else next(createSuccess(res, listResult?.length));
+    } else next(createSuccess(res, 0));
   } catch (error) {
     next(error);
   }
@@ -124,6 +126,7 @@ export const getNoPassMount = async (
       const listResultInClassroom = listResult?.filter((item) =>
         listStudentId.includes(item.userId)
       );
+      console.log('no-pass',listResultInClassroom);
 
       next(
         createSuccess(
@@ -131,7 +134,7 @@ export const getNoPassMount = async (
           listResultInClassroom?.filter((item) => !item?.isPass)?.length
         )
       );
-    } else next(createSuccess(res, listResult?.length));
+    } else next(createSuccess(res, 0));
   } catch (error) {
     next(error);
   }
@@ -197,7 +200,6 @@ export const getDetailQuestion = async (
       const listQuestionIds = listQuestionOfExams.map(
         (item) => item.questionId
       );
-      // console.log({ listQuestionIds });
 
       listQuestions = await Question.find({
         _id: {
@@ -235,21 +237,22 @@ export const getDetailQuestion = async (
         });
         return {
           question: question,
-          detail: question.listAnswers?.map((item) => ({
-            value: item,
-            amount:
-              question.type === QUESTION_TYPE.FILL
-                ? Array.from(
-                    new Set(listUserAnswers.map((item) => item.userAnswer[0]))
-                  ).filter(
-                    (userAnswer) =>
-                      userAnswer?.trim()?.toUpperCase() ===
-                      item?.trim()?.toUpperCase()
-                  ).length
-                : listUserAnswers.filter((userAnswer) =>
+          detail:
+            question.type === QUESTION_TYPE.FILL
+              ? Array.from(
+                  new Set(listUserAnswers.map((item) => item.userAnswer[0]))
+                )?.filter(item => item)?.map((item: any) => ({
+                  value: item,
+                  amount: listUserAnswers.filter(
+                    (userAnswer) => userAnswer.userAnswer.includes(item)
+                  ).length,
+                }))
+              : question.listAnswers?.map((item) => ({
+                  value: item,
+                  amount: listUserAnswers.filter((userAnswer) =>
                     userAnswer.userAnswer.includes(item)
                   ).length,
-          })),
+                })),
           total: listUserAnswers?.length ?? 0,
           amountCorrectAnswer: listUserAnswers?.filter(
             (userAnswer) => userAnswer.status
@@ -295,24 +298,28 @@ export const getRating = async (
     const listSortedResult = listResults?.sort((result1, result2) => {
       if (result1.numberOfCorrectAnswer > result2.numberOfCorrectAnswer)
         return -1;
-      else if(result1.numberOfCorrectAnswer === result2.numberOfCorrectAnswer){
-        if(result1.time < result2?.time){
-          return -1
-        } else return 0 
-      } else return 0
+      else if (
+        result1.numberOfCorrectAnswer === result2.numberOfCorrectAnswer
+      ) {
+        if (result1.time < result2?.time) {
+          return -1;
+        } else return 0;
+      } else return 0;
     });
-    
 
-    const listUsers = await Promise.all(listSortedResult?.map(async(result)=>{
-      return await User.findById(result.userId)
-    }))
+    const listUsers = await Promise.all(
+      listSortedResult?.map(async (result) => {
+        return await User.findById(result.userId);
+      })
+    );
 
-    console.log({listUsers,listSortedResult})
-
-    const resData = listSortedResult.map((result,index)=> ({ user: listUsers?.[index],time: result.time, numberOfCorrectAnswer: result.numberOfCorrectAnswer}))
+    const resData = listSortedResult.map((result, index) => ({
+      user: listUsers?.[index],
+      time: result.time,
+      numberOfCorrectAnswer: result.numberOfCorrectAnswer,
+    }));
 
     createSuccess(res, resData);
-
   } catch (error) {
     next(error);
   }

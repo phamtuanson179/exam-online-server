@@ -5,6 +5,6 @@ export const createError = (
   err: { statusCode: number; message: string }
 ) => {
   return res
-    .status(200)
+    .status(510)
     .json({ success: false, statusCode: err.statusCode, message: err.message });
 };

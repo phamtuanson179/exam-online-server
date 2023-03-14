@@ -9,6 +9,7 @@ import { ExamOfClassroom } from "../models/ExamOfClassroom";
 import { QuestionOfExam } from "../models/QuestionOfExam";
 import { StudentOfClassroom } from "../models/StudentOfClassroom";
 import { Classroom } from "../models/Classroom";
+import { Question } from "../models/Question";
 
 export const getExam = async (
   req: Request,
@@ -49,8 +50,13 @@ export const getExamByClassroomId = async (
 ) => {
   try {
     const classroomId = req.query?.classroomId;
-    const classroom = await Classroom.findById(classroomId)
-    let exam = await Exam.find({subjectId: classroom?.subjectId});
+    const classroom = await Classroom.findById(classroomId);
+    const listExamOfClassrooms = await ExamOfClassroom.find({
+      classroomId: classroomId,
+    });
+
+    let exam = await Exam.find({ _id: listExamOfClassrooms.map(item => item.examId) });
+    
     next(createSuccess(res, exam));
   } catch (error) {
     next(error);
@@ -208,8 +214,24 @@ export const getQuestionOfExam = async (
 ) => {
   try {
     const examId = req.query.examId;
-    const listQuestionOfExam = await QuestionOfExam.find({ examId: examId });
-    next(createSuccess(res, listQuestionOfExam));
+    const exam = await Exam.findById(examId);
+    let listQuestionIds;
+    if (!exam?.isRandomInAll) {
+      const listQuestionOfExam = await QuestionOfExam.find({ examId: examId });
+      listQuestionIds = listQuestionOfExam
+        .map((item) => item.questionId)
+        .sort((a, b) => 0.5 - Math.random());
+    } else {
+      const listAllQuestions = await Question.find({
+        subjectId: exam?.subjectId,
+      });
+      const amountQuestion = exam.amountQuestion;
+      const listQuestionRandom = [...listAllQuestions]
+        .sort((a, b) => 0.5 - Math.random())
+        .slice(0, amountQuestion);
+      listQuestionIds = listQuestionRandom.map((item) => item._id);
+    }
+    next(createSuccess(res, listQuestionIds));
   } catch (error) {
     next(error);
   }

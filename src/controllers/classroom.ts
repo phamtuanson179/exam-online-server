@@ -15,6 +15,8 @@ import { TeacherOfClassroom } from "../models/TeacherOfClassroom";
 import mongoose from "mongoose";
 import { User } from "../models/User";
 import { ROLE } from "../constants/type";
+import { readFile, utils } from "xlsx";
+import { Subject } from "../models/Subject";
 
 export const getClass = async (
   req: Request,
@@ -43,9 +45,10 @@ export const getClass = async (
       let listTeacherOfClassrooms = await TeacherOfClassroom.find({
         userId: currentUserId,
       });
+      console.log({listTeacherOfClassrooms});
 
       listClasses = await Classroom.find({
-        _id: { $in: [listTeacherOfClassrooms.map((item) => item.classroomId)] },
+        _id: { $in: listTeacherOfClassrooms.map((item) => item.classroomId) },
         ...convertedFilter,
         ...{ isDeleted: false },
       });
@@ -304,6 +307,30 @@ export const getExamOfClassroom = async (
       classroomId: classroomId,
     });
     next(createSuccess(res, listExamOfClassroom));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createBatchClassrooms = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const file = readFile(req?.file?.path || "");
+    const content = utils.sheet_to_json(file.Sheets[file.SheetNames[0]]);
+
+    const listClassrooms = await Promise.all(content.map(async(item:any)=>{
+      const subject = await Subject.findOne({alias: item?.['Mã môn học'], isDeleted: false})
+      return {
+        name: item["Tên lớp học"],
+        subjectId: subject?._id,
+      }
+    }))
+
+    const batchClassrooms = await Classroom.insertMany(listClassrooms) 
+    createSuccess(res, batchClassrooms);
   } catch (error) {
     next(error);
   }

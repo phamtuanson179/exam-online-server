@@ -8,6 +8,7 @@ import { Classroom } from "../models/Classroom";
 import { Subject } from "../models/Subject";
 import { TeacherOfClassroom } from "../models/TeacherOfClassroom";
 import { Student, Teacher, User } from "../models/User";
+import { readFile, utils } from "xlsx";
 
 export const getSubject = async (
   req: Request,
@@ -32,8 +33,6 @@ export const getSubject = async (
       const listSubjectIds = new Set(
         listClassrooms.map((item) => item.subjectId)
       );
-
-      console.log({listSubjectIds});
 
       listSubjects = await Subject.find({
         _id: { $in:Array.from(listSubjectIds)},
@@ -191,6 +190,28 @@ export const updateStudentOfSubject = async (
       await Student.findOneAndDelete({ subjectId: subjectId, userId: userId });
     });
     next(createSuccess(res, ""));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createBatchSubjects = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const file = readFile(req?.file?.path || "");
+    const content = utils.sheet_to_json(file.Sheets[file.SheetNames[0]]);
+
+    const batchSubjects = await Subject.insertMany(
+      content.map((user: any) => ({
+        name: user?.["Tên môn học"],
+        alias: user?.["Mã môn học"],
+        description: user?.["Mô tả"],
+      }))
+    );
+    createSuccess(res, batchSubjects);
   } catch (error) {
     next(error);
   }
